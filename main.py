@@ -1,13 +1,10 @@
 from drinks import MENU, resources
+from art import logo
 
 # TODO: Prompt the user by giving choices of drinks.
 # take input from the user: “What would you like? (espresso/latte/cappuccino):”
 # There are hidden options too, report, this publishes the resources left at any given time
 # and "off" which terminates the machine/program for execution.
-
-action = input("What would you like? (espresso/latte/cappuccino): ").lower()
-
-print(action)
 
 
 # TODO: Print Report.
@@ -16,7 +13,7 @@ def publish_report():
     """Report publishes the resources left at any given time."""
     cash = 0.0
     # if action == "report":
-    Money = cash
+    # Money = cash
     water = resources["water"]
     milk = resources["milk"]
     coffee = resources["coffee"]
@@ -56,8 +53,7 @@ def check_resources(choice):
 
     available_resources = publish_report()
     if available_resources[0] >= water and available_resources[1] >= milk and available_resources[2] >= coffee:
-        print(f"Cost of drink: {cost}")
-        return cost
+        return water, milk, coffee, cost
     else:
         print("Sorry there is not enough resources")
         return
@@ -85,34 +81,12 @@ def process_coins(price):
     if price <= calculate_total:
         change = calculate_total - price
         print(f"Here's is your change: $ {round(change, 2)}")
-        return change
+        return True
     else:
         print("Sorry that's not enough money. Money refunded.")
         return False
 
 
-
-cash = publish_report()[3]
-if action == "report":
-    # publish_report()
-    print(f"REPORT:==> \n Water: {publish_report()[0]}ml \n Milk: {publish_report()[1]}ml \n Coffee: {publish_report()[2]}g \n Money: ${publish_report()[3]}")
-    # print(publish_report())
-else:
-    cost_of_drink = check_resources(action)
-    print(f"Cost of {action}: {cost_of_drink}")
-    while process_coins(cost_of_drink):
-        cash = cash + cost_of_drink
-        print(f"Here is your {action} ☕️. Enjoy!")
-
-    print(f"Total Earnings: {cash}")
-
-
-
-
-
-
-# cash_in_machine = publish_report()[3]
-# print(f"Again, Cash Earned so far: ${cash_in_machine}")
 # TODO: Check transaction successful?
 # Also calculate the value of instead coins and if more than the value of drink, offer change by subtracting the cost.
 # The cost of drink must be added to the Money earned by machine after each serving.
@@ -123,3 +97,42 @@ else:
 # coffee machine resources
 # b) Once all resources have been deducted, tell the user “Here is your latte. Enjoy!”. If
 # latte was their choice of drink.
+
+def coffee_machine():
+
+    # this is where the program starts.
+    # initializing all variables of coffee machine
+    total_water, total_milk, total_coffee, total_cash = 0, 0, 0, 0
+    print(logo)
+    # getting the values of coffee machine
+    total_water, total_milk, total_coffee, total_cash = publish_report()
+    # print(total_water, total_milk, total_coffee, total_cash)
+    maintenance_required = False
+    while not maintenance_required:
+        action = input("What would you like? (espresso/latte/cappuccino): ").lower()
+        # print(action)
+        if action == "off":
+            maintenance_required = True
+            print("Coffee machine has been turned off for maintenance")
+            return
+        elif action == "report":
+            # publish_report()
+            print(
+                f"REPORT:==> \n Water: {total_water}ml \n Milk: {total_milk}ml \n Coffee: {total_coffee}g \n Earnings: ${total_cash}")
+            return
+        else:
+            required_water, required_milk, required_coffee, required_cash = check_resources(action)
+            # print(required_water, required_milk, required_coffee, required_cash)
+            # cost_of_drink = check_resources(action)[3]
+            print(f"That would be ${required_cash} for your {action}.")
+            if process_coins(required_cash):
+                total_cash = total_cash + required_cash
+                total_water = total_water - required_water
+                total_milk = total_milk - required_milk
+                total_coffee = total_coffee - required_coffee
+                print(f"Here is your {action} ☕️. Enjoy!")
+
+
+coffee_machine()
+# cash_in_machine = publish_report()[3]
+# print(f"Again, Cash Earned so far: ${cash_in_machine}")
